@@ -15,7 +15,9 @@ import * as Web3 from 'web3';
 
 const w3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8577'));
 
-const CBT = new w3.eth.Contract(require('./SimpleCBT.json').abi)
+const artifact = require('../build/contracs/SimpleCBTDetailed.json');
+
+const CBT = new w3.eth.Contract(artifact.abi)
 
 // Out of 1 million
 const reserveRatio = 500000;
@@ -43,7 +45,7 @@ class App extends Component {
   async componentWillMount() {
     const account = (await w3.eth.getAccounts())[0];
     const balance = await w3.eth.getBalance(account);
-    const cbt = await CBT.deploy({ data: require('./SimpleCBT.json').bytecode, arguments: [ reserveRatio ] }).send({ from: account, gasPrice: '12', gas: '6000000' });
+    const cbt = await CBT.deploy({ data: artifact.bytecode, arguments: [ reserveRatio ] }).send({ from: account, gasPrice: '12', gas: '6000000' });
     const range = [...new Array(300).keys()].slice(1).map(val => w3.utils.toWei(String(val), 'ether'));
     const data = await Promise.all(range.map(async val => new Object({name: w3.utils.fromWei(val, 'ether'), uv: w3.utils.fromWei(await cbt.methods.calculateCurvedMintReturn(val).call(), 'ether')})));
     const poolBalance = await cbt.methods.poolBalance().call();

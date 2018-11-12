@@ -1,7 +1,7 @@
 {
-  "name": "bonding-curve",
+  "name": "arc",
   "version": "0.0.1",
-  "description": "Smart Contracts for bonding curves.",
+  "description": "Composable bonding curves framework.",
   "main": "truffle-config.js",
   "directories": {
     "test": "test"
@@ -16,19 +16,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lsaether/bonding-curves.git"
+    "url": "git+https://github.com/convergentcx/Arc.git"
   },
   "keywords": [
     "ethereum",
-    "tcr",
+    "tbc",
     "tokens"
   ],
-  "author": "lsaether",
+  "author": "convergentcx",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/lsaether/bonding-curves/issues"
+    "url": "https://github.com/convergentcx/Arc/issues"
   },
-  "homepage": "https://github.com/lsaether/bonding-curves#readme",
+  "homepage": "https://github.com/convergentcx/Arc#readme",
   "dependencies": {
     "openzeppelin-solidity": "2.0.0-rc.3",
     "truffle": "5.0.0-next.12"
@@ -39,7 +39,7 @@
     "@types/web3": "1.0.11",
     "bn.js": "4.11.8",
     "chai": "4.2.0",
-    "ganache-cli": "^6.1.8",
+    "ganache-cli": "6.1.8",
     "truffle-typings": "1.0.3",
     "ts-node": "7.0.1",
     "typechain": "0.3.6",
