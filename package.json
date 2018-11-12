@@ -1,5 +1,5 @@
 {
-  "name": "arc",
+  "name": "@convergent/arc",
   "version": "0.0.1",
   "description": "Composable bonding curves framework.",
   "main": "truffle-config.js",
