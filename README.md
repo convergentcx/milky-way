@@ -40,7 +40,6 @@ Start by installing dependencies and running ganache in one console:
 ```
 $ yarn
 $ yarn ganache
-$ 
 ```
 
 In other console run:
