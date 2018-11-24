@@ -4,19 +4,16 @@ import { EthPolynomialCurvedTokenInstance } from '../types/truffle-contracts';
 import BN = require('bn.js');
 import Web3 = require('web3');
 
+import {
+  addDecimals,
+  removeDecimals,
+} from './helpers';
+
 declare const web3: Web3;
 
 const EthPolynomialCurvedToken = artifacts.require('EthPolynomialCurvedToken');
 
-const addDecimals = (numTokens: any) => {
-  return web3.utils.toWei(String(numTokens), 'ether').toString();
-}
-
-const removeDecimals = (tokens: any) => {
-  return web3.utils.fromWei(tokens, 'ether').toString();
-}
-
-contract('Sign', ([owner, user1, user2]) => {
+contract('EthPolynomialCurvedTokenLinear', ([owner, user1, user2]) => {
   let ethCurvedToken: EthPolynomialCurvedTokenInstance;
 
   before(async () => {
@@ -25,13 +22,13 @@ contract('Sign', ([owner, user1, user2]) => {
       "CNVRGNT",
       '18',
       '1',
-      '1000'
-    )
+      '1000',
+    );
     
     expect(ethCurvedToken.address).to.exist;
 
     const poolBalance = await ethCurvedToken.poolBalance();
-    expect(poolBalance.eq(new BN(0))).to.be.true;
+    expect(poolBalance.toString()).to.equal('0');
 
     const exponent = await ethCurvedToken.exponent();
     expect(exponent.toString()).to.equal('1');
