@@ -21,7 +21,8 @@
   },
   "keywords": [
     "ethereum",
-    "tbc",
+    "bonding-curves",
+    "curation-markets",
     "tokens"
   ],
   "author": "convergentcx",
@@ -39,7 +40,7 @@
     "chai": "4.2.0",
     "ganache-cli": "6.1.8",
     "openzeppelin-eth": "2.0.2",
-    "openzeppelin-solidity": "^2.0.0",
+    "openzeppelin-solidity": "2.0.0",
     "truffle": "5.0.0-next.12",
     "truffle-typings": "1.0.5",
     "ts-node": "7.0.1",

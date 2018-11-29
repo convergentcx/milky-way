@@ -10,3 +10,4 @@ script:
 before_script:
   - yarn ganache &
   - sleep 5
+  - yarn generate
