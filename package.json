@@ -25,15 +25,12 @@
     "tokens"
   ],
   "author": "convergentcx",
-  "license": "GPL-3.0",
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/convergentcx/Arc/issues"
   },
   "homepage": "https://github.com/convergentcx/Arc#readme",
-  "dependencies": {
-    "openzeppelin-solidity": "2.0.0-rc.3",
-    "truffle": "5.0.0-next.12"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/bn.js": "4.11.2",
     "@types/chai": "4.1.6",
@@ -41,9 +38,13 @@
     "bn.js": "4.11.8",
     "chai": "4.2.0",
     "ganache-cli": "6.1.8",
-    "truffle-typings": "1.0.3",
+    "openzeppelin-eth": "2.0.2",
+    "openzeppelin-solidity": "^2.0.0",
+    "truffle": "5.0.0-next.12",
+    "truffle-typings": "1.0.5",
     "ts-node": "7.0.1",
     "typechain": "0.3.6",
-    "typescript": "3.1.3"
+    "typescript": "3.1.3",
+    "zos-lib": "2.0.1"
   }
 }
