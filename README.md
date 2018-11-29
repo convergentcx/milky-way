@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/convergentcx/Arc.svg?branch=master)](https://travis-ci.org/convergentcx/Arc)
+
 # Arc
 
 [Bonding Curves](https://medium.com/@simondlr/tokens-2-0-curved-token-bonding-in-curation-markets-1764a2e0bee5) are a method of token issuance which allow for continuous liquidity of the token through
