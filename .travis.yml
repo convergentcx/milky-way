@@ -2,7 +2,7 @@ sudo: required
 dist: trusty
 language: node_js
 node_js:
-  - '8.0.0'
+  - '10.5.0'
 install:
   - yarn
 script:
