@@ -3,10 +3,9 @@ pragma solidity ^0.4.24;
 import "openzeppelin-eth/contracts/math/SafeMath.sol";
 import "openzeppelin-eth/contracts/token/ERC20/ERC20.sol";
 import "openzeppelin-eth/contracts/token/ERC20/ERC20Detailed.sol";
-// import "zos-lib/contracts/Initializable.sol";
+import "zos-lib/contracts/Initializable.sol";
 
-
-contract WithERC20Reserve is ERC20Detailed, ERC20 {
+contract WithERC20Reserve is Initializable, ERC20, ERC20Detailed {
     using SafeMath for uint256;
 
     ERC20 public reserveToken;
@@ -43,6 +42,7 @@ contract WithERC20Reserve is ERC20Detailed, ERC20 {
             "Sender does not have enough reserve tokens to stake!"
         );
 
+        reserveToken.transferFrom(msg.sender, address(this), staked);
         reserve = reserve.add(staked);
         _mint(msg.sender, newTokens);
 

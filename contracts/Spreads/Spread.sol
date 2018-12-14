@@ -1,11 +1,11 @@
 pragma solidity ^0.4.24;
 
-import "./Reserve/WithEtherReserve.sol";
+import "../Reserve/WithEtherReserve.sol";
 
-contract SpreadCBT is WithEtherReserve {
+contract Spread is WithEtherReserve {
 
-    uint256 public buyExp;  // Buy exponent
-    uint256 public sellExp; // Sell exponent
+    uint256 public buyExponent;
+    uint256 public sellExponent;
 
     uint256 public buyInverseSlope;
     uint256 public sellInverseSlope;
@@ -21,8 +21,8 @@ contract SpreadCBT is WithEtherReserve {
     )   public
     {
         initialize(name, symbol, decimals);
-        buyExp = _be;
-        sellExp = _se;
+        buyExponent = _be;
+        sellExponent = _se;
         require(_bis <= _sis, "Must exist a higher buy curve than a sell curve.");
         buyInverseSlope = _bis;
         sellInverseSlope = _sis;
@@ -37,37 +37,48 @@ contract SpreadCBT is WithEtherReserve {
         return (_t ** nexp).div(nexp).div(_inverseSlope).div(10**18);
     }
 
-    function priceToMint(uint256 numTokens)
+    function stakeAmt(uint256 numTokens)
         public view returns (uint256)
     {
         return integral(
             totalSupply().add(numTokens),
-            buyExp,
+            buyExponent,
             buyInverseSlope
         ).sub(reserve);
     }
 
-    function rewardForBurn(uint256 numTokens)
+    /// Overwrite
+    function stake(uint256 newTokens)
+        public payable returns (uint256 staked)
+    {
+        uint256 spreadBefore = spread(totalSupply());
+        staked = super.stake(newTokens);
+
+        uint256 spreadAfter = spread(totalSupply());
+        address(this).transfer(spreadAfter.sub(spreadBefore));
+    }
+
+    function withdrawAmt(uint256 numTokens)
         public view returns (uint256)
     {
         return reserve.sub(integral(
             totalSupply().sub(numTokens),
-            sellExp,
+            sellExponent,
             sellInverseSlope
         ));
     }
 
-    function spread()
+    function spread(uint256 _at)
         public view returns (uint256)
     {
         uint256 buyIntegral = integral(
-            totalSupply(),
-            buyExp,
+            _at,
+            buyExponent,
             buyInverseSlope
         );
         uint256 sellIntegral = integral(
-            totalSupply(),
-            sellExp,
+            _at,
+            sellExponent,
             sellInverseSlope
         );
         return buyIntegral.sub(sellIntegral);
