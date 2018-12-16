@@ -71,21 +71,21 @@ contract('SpreadERC20', ([owner, user1, user2]) => {
       from: user1,
     });
 
-    const stakeTx = await spreadERC20.stake(
+    const buyTx = await spreadERC20.buy(
       web3.utils.toWei('1', 'ether'),
       {
         from: user1,
       }
     );
 
-    const stakeEvent = findEvent(stakeTx.logs, "CurveStake");
-    expect(stakeEvent).to.exist;
+    const buyEvent = findEvent(buyTx.logs, "CurveBuy");
+    expect(buyEvent).to.exist;
 
-    expect(stakeEvent.args.newTokens.toString()).to.equal(web3.utils.toWei('1', 'ether'));
-    expect(web3.utils.fromWei(stakeEvent.args.nStaked.toString())).to.equal('0.0005');
+    expect(buyEvent.args.amount.toString()).to.equal(web3.utils.toWei('1', 'ether'));
+    expect(web3.utils.fromWei(buyEvent.args.paid.toString())).to.equal('0.0005');
 
-    const spreadEvent = findEvent(stakeTx.logs, "SpreadPayout");
-    expect(web3.utils.fromWei(spreadEvent.args.amount.toString())).to.equal('0.000083333333333334');
+    const payoutEvent = findEvent(buyTx.logs, "Payout");
+    expect(web3.utils.fromWei(payoutEvent.args.amount.toString())).to.equal('0.000083333333333334');
 
     const tokenBalance = await spreadERC20.balanceOf(user1);
     expect(tokenBalance.toString()).to.equal(web3.utils.toWei('1', 'ether'));
@@ -113,10 +113,10 @@ contract('SpreadERC20', ([owner, user1, user2]) => {
     ).to.equal(shouldHaveReserved.toString());
 
     expect(
-      (await spreadERC20.withdrawAmt(web3.utils.toWei('1', 'ether'))).toString()
+      (await spreadERC20.reward(web3.utils.toWei('1', 'ether'))).toString()
     ).to.equal(shouldHaveReserved.toString());
 
-    const withdrawTx = await spreadERC20.withdraw(
+    const sellTx = await spreadERC20.sell(
       web3.utils.toWei('1', 'ether'),
       {
         from: user1,
@@ -124,13 +124,13 @@ contract('SpreadERC20', ([owner, user1, user2]) => {
     );
 
     // Sanity
-    expect(withdrawTx.receipt).to.exist;
+    expect(sellTx.receipt).to.exist;
 
-    const withdrawEvent = findEvent(withdrawTx.logs, "CurveWithdraw");
-    expect(withdrawEvent).to.exist;
+    const sellEvent = findEvent(sellTx.logs, "CurveSell");
+    expect(sellEvent).to.exist;
 
-    expect(withdrawEvent.args.spentTokens.toString()).to.equal(toWei('1', 'ether'));
-    expect(withdrawEvent.args.nWithdrawn.toString()).to.equal(shouldHaveReserved.toString());
+    expect(sellEvent.args.amount.toString()).to.equal(toWei('1', 'ether'));
+    expect(sellEvent.args.rewarded.toString()).to.equal(shouldHaveReserved.toString());
 
     // Check user1 balance of spread token === 0
     const tokenBalance = await spreadERC20.balanceOf(user1)

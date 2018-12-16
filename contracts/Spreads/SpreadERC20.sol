@@ -13,7 +13,7 @@ contract SpreadERC20 is Initializable, Ownable, WithERC20Reserve {
     uint256 public buyInverseSlope;
     uint256 public sellInverseSlope;
 
-    event SpreadPayout(uint256 amount);
+    event Payout(uint256 amount, uint256 indexed timestamp);
 
     function initialize(
         string name,
@@ -36,59 +36,59 @@ contract SpreadERC20 is Initializable, Ownable, WithERC20Reserve {
     } 
 
     function integral(
-        uint256 _d,
-        uint256 _exponent,
-        uint256 _inverseSlope
+        uint256 toX,
+        uint256 exponent,
+        uint256 inverseSlope
     )   internal view returns (uint256) {
-        uint256 nexp = _exponent.add(1);
-        return (_d ** nexp).div(nexp).div(_inverseSlope).div(10**18);
+        uint256 nexp = exponent.add(1);
+        return (toX ** nexp).div(nexp).div(inverseSlope).div(10**18);
     }
 
-    function spread(uint256 _x)
+    function spread(uint256 toX)
         public view returns (uint256)
     {
         uint256 buyIntegral = integral(
-            _x,
+            toX,
             buyExponent,
             buyInverseSlope
         );
         uint256 sellIntegral = integral(
-            _x,
+            toX,
             sellExponent,
             sellInverseSlope
         );
         return buyIntegral.sub(sellIntegral);
     }
 
-    function stakeAmt(uint256 numTokens)
+    function price(uint256 tokens)
         public view returns (uint256)
     {
         return integral(
-            totalSupply().add(numTokens),
+            totalSupply().add(tokens),
             buyExponent,
             buyInverseSlope
         ).sub(reserve);
     }
 
     /// Overwrite
-    function stake(uint256 newTokens)
-        public returns (uint256 staked)
+    function buy(uint256 tokens)
+        public returns (uint256 paid)
     {
         uint256 spreadBefore = spread(totalSupply());
-        staked = super.stake(newTokens);
+        paid = super.buy(tokens);
 
         uint256 spreadAfter = spread(totalSupply());
         uint256 spreadPayout = spreadAfter.sub(spreadBefore);
         reserve = reserve.sub(spreadPayout);
         reserveToken.transfer(owner(), spreadPayout);
-        emit SpreadPayout(spreadPayout);
+        emit Payout(spreadPayout, block.timestamp);
     }
 
-    function withdrawAmt(uint256 numTokens)
+    function reward(uint256 tokens)
         public view returns (uint256)
     {
         return reserve.sub(integral(
-            totalSupply().sub(numTokens),
+            totalSupply().sub(tokens),
             sellExponent,
             sellInverseSlope
         ));

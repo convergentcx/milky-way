@@ -11,58 +11,58 @@ contract WithERC20Reserve is Initializable, ERC20, ERC20Detailed {
     ERC20 public reserveToken;
     uint256 public reserve;
 
-    event CurveStake(uint256 newTokens, uint256 nStaked, uint256 indexed when);
-    event CurveWithdraw(uint256 spentTokens, uint256 nWithdrawn, uint256 indexed when);
+    event CurveBuy(uint256 amount, uint256 paid, uint256 indexed when);
+    event CurveSell(uint256 amount, uint256 rewarded, uint256 indexed when);
 
-    function initialize(string name, string symbol, uint8 decimals, address _reserveToken)
+    function initialize(string name, string symbol, uint8 decimals, address token)
         initializer
         public
     {
         ERC20Detailed.initialize(name, symbol, decimals);
-        reserveToken = ERC20(_reserveToken);
+        reserveToken = ERC20(token);
     }
 
     /**
      * curve function interfaces */
 
-    function stakeAmt(uint256 newTokens) public view returns (uint256);
-    function withdrawAmt(uint256 spendTokens) public view returns (uint256);
+    function price(uint256 tokens) public view returns (uint256 thePrice);
+    function reward(uint256 tokens) public view returns (uint256 theReward);
 
     /**
      * stake and withdraw */
     
-    function stake(uint256 newTokens)
-        public returns (uint256 staked)
+    function buy(uint256 tokens)
+        public returns (uint256 paid)
     {
-        require(newTokens > 0, "Must request non-zero amount of new tokens.");
+        require(tokens > 0, "Must request non-zero amount of new tokens.");
 
-        staked = stakeAmt(newTokens);
+        paid = price(tokens);
         require(
-            reserveToken.balanceOf(msg.sender) >= staked,
+            reserveToken.balanceOf(msg.sender) >= paid,
             "Sender does not have enough reserve tokens to stake!"
         );
 
-        reserveToken.transferFrom(msg.sender, address(this), staked);
-        reserve = reserve.add(staked);
-        _mint(msg.sender, newTokens);
+        reserveToken.transferFrom(msg.sender, address(this), paid);
+        reserve = reserve.add(paid);
+        _mint(msg.sender, tokens);
 
-        emit CurveStake(newTokens, staked, block.timestamp);
+        emit CurveBuy(tokens, paid, block.timestamp);
     }
 
-    function withdraw(uint256 spendTokens)
-        public returns (uint256 withdrawn)
+    function sell(uint256 tokens)
+        public returns (uint256 rewarded)
     {
-        require(spendTokens > 0, "Must spend non-zero amount of tokens.");
+        require(tokens > 0, "Must spend non-zero amount of tokens.");
         require(
-            balanceOf(msg.sender) >= spendTokens,
+            balanceOf(msg.sender) >= tokens,
             "Sender does not have enough tokens to spend."
         );
 
-        withdrawn = withdrawAmt(spendTokens);
-        reserve = reserve.sub(withdrawn);        
-        _burn(msg.sender, spendTokens);
-        reserveToken.transfer(msg.sender, withdrawn);
+        rewarded = reward(tokens);
+        reserve = reserve.sub(rewarded);        
+        _burn(msg.sender, tokens);
+        reserveToken.transfer(msg.sender, rewarded);
 
-        emit CurveWithdraw(spendTokens, withdrawn, block.timestamp);
+        emit CurveSell(tokens, rewarded, block.timestamp);
     }
 }
