@@ -25,11 +25,11 @@ contract SingleEther is Initializable, Ownable, WithEtherReserve {
         inverseSlope = _inverseSlope;
     }
 
-    function integral(uint256 toX, uint256 exponent, uint256 inverseSlope)
+    function integral(uint256 toX, uint256 _exponent, uint256 _inverseSlope)
         internal pure returns (uint256)
     {
-        uint256 nexp = exponent.add(1);
-        return (toX ** nexp).div(nexp).div(inverseSlope).div(10**18);
+        uint256 nexp = _exponent.add(1);
+        return (toX ** nexp).div(nexp).div(_inverseSlope).div(10**18);
     }
 
     function price(uint256 forTokens)
@@ -39,9 +39,9 @@ contract SingleEther is Initializable, Ownable, WithEtherReserve {
     }
 
     function reward(uint256 forTokens)
-        public view returns (theReward)
+        public view returns (uint256 theReward)
     {
-        return reserve.sub(integral(totalSupply.sub(forTokens), exponent, inverseSlope));
+        return reserve.sub(integral(totalSupply().sub(forTokens), exponent, inverseSlope));
     }
 
     function currentPrice()

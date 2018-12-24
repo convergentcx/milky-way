@@ -15,10 +15,10 @@ interface IBondedFungibleToken {
     event CurveSell(uint256 amount, uint256 rewarded, address indexed seller);
 
     // Returns the price for buying `forTokens` amount of bonded tokens.
-    function price(uint256 forTokens) public view returns (uint256 thePrice);
+    function price(uint256 forTokens) external view returns (uint256 thePrice);
 
     // Returns the reward for selling `forTokens` amount of bonded tokens.
-    function reward(uint256 forTokens) public view returns (uint256 theReward);
+    function reward(uint256 forTokens) external view returns (uint256 theReward);
 
     // Buys `tokens` amount of bonded tokens and returns how much `paid` in reserve.
     function buy(uint256 tokens) external returns (uint256 paid);
@@ -27,11 +27,11 @@ interface IBondedFungibleToken {
     function sell(uint256 tokens) external returns (uint256 rewarded);
 
     // Returns the current price of the token. Mostly useful for reference.
-    function currentPrice() public view returns (uint256 theCurrentPrice);
+    function currentPrice() external view returns (uint256 theCurrentPrice);
 
     // Returns the address of the asset smart contract or 0x0 for ether.
-    function reserveAsset() public view returns (address asset);
+    function reserveAsset() external view returns (address asset);
 
     // Returns the amount of `reserveAsset` held in reserve in contract. 
-    function reserve() public view returns (uint256 amount);
+    function reserve() external view returns (uint256 amount);
 }
